@@ -51,9 +51,9 @@ class G2JN_Pipeline:
     def transform(
         self,
         samples_per_bin=30,
-        max_bins=1000,
+        max_bins=750,
         method="mean",
-        threshold=0.3,
+        threshold=0.5,
         percentile_threshold = 25,
         min_amount_samples_in_bin = 10,
         gen_seed = 1,
