@@ -115,7 +115,7 @@ class G2JN_Pipeline:
         preds_new = self.xg_reg.predict(self.splited['X_test'])
         self.rmse_imprv = np.sqrt(mean_squared_error(self.splited['y_test'], preds_new))
         self.mae_imprv = mean_absolute_error(self.splited['y_test'], preds_new)
-        
+        print("-------------------------------------------------")   
         print(f"Initial RMSE: {round(self.rmse_org,2):.2f}")
         print(f"Improved RMSE: {round(self.rmse_imprv,2):.2f}")
         if ((self.rmse_imprv - self.rmse_org) / self.rmse_org) <0:
