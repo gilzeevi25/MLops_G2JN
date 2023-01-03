@@ -29,7 +29,6 @@ class G2JN_Pipeline:
         print(f"Initializing Pipeline on {self.name} dataset...\n")
         # Data split
         self.splited = split_bin(self.X,self.y)
-        self.parameters['conf_int']= conf_int
         # Initial prediction
         self.xg_reg.fit(self.splited['X_train'],self.splited['y_train'])
         self.preds = self.xg_reg.predict(self.splited['X_test'])
