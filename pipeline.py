@@ -35,7 +35,8 @@ class G2JN_Pipeline:
         self.rmse_org = np.sqrt(mean_squared_error(self.splited['y_test'], self.preds))
         self.mae_org = mean_absolute_error(self.splited['y_test'], self.preds)
         print("Initial RMSE: %f" % (round(self.rmse_org,2)),"\n")
-        print("Initial MAE: %f" % (round(self.mae_org,2)),"\n")
+        #print(f"Initial RMSE: {round(self.rmse_org,2)}
+        print("Initial MAE: %f" % (round(self.mae_org,2):.2f),"\n")
         
         # Apply Macest to get prediction interval
         conf_interval = get_conf_interval(conf_int, self.splited,mac_seed)
