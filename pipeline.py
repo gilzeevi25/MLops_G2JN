@@ -24,10 +24,31 @@ class G2JN_Pipeline:
         self.name = name
         self.xg_reg = xg_reg # baseline model - xgboost
 
-    def fit_transform(
+        
+    def fit(self,conf_int = 95,mac_seed= 101):
+        print(f"Initializing Pipeline on {self.name} dataset...\n")
+        # Data split
+        self.splited = split_bin(self.X,self.y)
+        self.parameters['conf_int']= conf_int
+        # Initial prediction
+        self.xg_reg.fit(self.splited['X_train'],self.splited['y_train'])
+        self.preds = self.xg_reg.predict(self.splited['X_test'])
+        self.rmse_org = np.sqrt(mean_squared_error(self.splited['y_test'], self.preds))
+        print("Initial RMSE: %f" % (self.rmse_org),"\n")
+        self.parameters['org_rmse'] = self.rmse_org
+        # Apply Macest to get prediction interval
+        conf_interval = get_conf_interval(conf_int, self.splited,mac_seed)
+
+        self.conf_df = pd.DataFrame()
+        self.conf_df['lower_bound_pred'] = conf_interval.squeeze()[:,0]
+        self.conf_df['upper_bound_pred'] = conf_interval.squeeze()[:,1]
+        self.conf_df['diff_prop'] = abs(self.conf_df['upper_bound_pred'] - self.conf_df['lower_bound_pred'])
+        self.conf_df['y_pred'] = self.preds
+        self.conf_df = self.conf_df.query("lower_bound_pred<=y_pred <= upper_bound_pred").reset_index(drop=True)  # Drop faulted samples
+
+
+    def transform(
         self,
-        conf_int = 95,
-        mac_seed = 101,
         samples_per_bin=30,
         max_bins=1000,
         method="mean",
@@ -38,35 +59,6 @@ class G2JN_Pipeline:
         gen_len = 1,
 
         ):
-
-        print(f"Initializing Pipeline on {self.name} dataset...\n")
-
-        # Data split
-        self.splited = split_bin(self.X,self.y)
-
-        # Initial prediction
-        self.xg_reg.fit(self.splited['X_train'],self.splited['y_train'])
-        self.preds = self.xg_reg.predict(self.splited['X_test'])
-        self.rmse_org = np.sqrt(mean_squared_error(self.splited['y_test'], self.preds))
-        print("\nInitial RMSE: %f" % (self.rmse_org),"\n")
-        ##########################################################################
-        #DO WE WANT TO PRINT TRAIN-CONF-CAL-TEST SHAPE?
-        # print(f"X_train shape: {self.splited['X_train'].shape}")
-        # print(f"X_pp_train shape: {self.splited['X_pp_train'].shape}")
-        # print(f"X_conf_train shape: {self.splited['X_conf_train'].shape}")
-        # print(f"X_cal shape: {self.splited['X_cal'].shape}")
-        # print(f"X_test shape: {self.splited['X_test'].shape}")
-        ##########################################################################
-
-        # Apply Macest to get prediction interval
-        conf_interval = get_conf_interval(conf_int, self.splited,mac_seed)
-
-        self.conf_df = pd.DataFrame()
-        self.conf_df['lower_bound_pred'] = conf_interval.squeeze()[:,0]
-        self.conf_df['upper_bound_pred'] = conf_interval.squeeze()[:,1]
-        self.conf_df['diff_prop'] = abs(self.conf_df['upper_bound_pred'] - self.conf_df['lower_bound_pred'])
-        self.conf_df['y_pred'] = self.preds
-        self.conf_df = self.conf_df.query("lower_bound_pred<=y_pred <= upper_bound_pred").reset_index(drop=True)  # Drop faulted samples
 
         # Bin the data
         self.bins_df, _ = assign_bins( # CHECK IF self.splited GETS BINNED ALONG THE WAY TOO... IT DOES ON COLAB BUT NOT necessarily ON CLASS
