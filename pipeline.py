@@ -24,30 +24,16 @@ class G2JN_Pipeline:
         self.name = name
         self.xg_reg = xg_reg # baseline model - xgboost
 
-    def normalize(self, Z: np.ndarray):
-        Z_mean = np.mean(Z, 0, keepdims=True)
-        Z_std = 1e-6 + np.std(Z, 0, keepdims=True)
-        return (Z - Z_mean) / Z_std, Z_mean, Z_std 
-
-    def preprocess(self, X, Y):
-        X, self.X_mean, self.X_std = self.normalize(X.values)
-        Y, self.Y_mean, self.Y_std = self.normalize(Y.values)
-        self.X =pd.DataFrame(X,columns = self.columns)
-        self.y = pd.Series(Y,name=self.y_name)
-        # return pd.DataFrame(X,columns = x_columns), pd.Series(Y,name=y_name)
-
-
     def fit_transform(
         self,
-        pre_process = False,
         conf_int = 95,
         mac_seed = 101,
-        samples_per_bin=20,
+        samples_per_bin=30,
         max_bins=1000,
-        method="mean",
+        method="median",
         threshold=0.7,
-        percentile_threshold = 50,
-        min_amount_samples_in_bin = 8,
+        percentile_threshold = 25,
+        min_amount_samples_in_bin = 10,
         gen_seed = 1,
         gen_len = 1,
 
@@ -64,7 +50,8 @@ class G2JN_Pipeline:
         self.xg_reg.fit(self.splited['X_train'],self.splited['y_train'])
         self.preds = self.xg_reg.predict(self.splited['X_test'])
         self.rmse_org = np.sqrt(mean_squared_error(self.splited['y_test'], self.preds))
-        print("Initial RMSE: %f" % (self.rmse_org),"\n")
+        print("##########################################################################")
+        print("\nInitial RMSE: %f" % (self.rmse_org),"\n")
         ##########################################################################
         #DO WE WANT TO PRINT TRAIN-CONF-CAL-TEST SHAPE?
         # print(f"X_train shape: {self.splited['X_train'].shape}")
@@ -138,6 +125,10 @@ class G2JN_Pipeline:
         self.rmse_imprv = np.sqrt(mean_squared_error(self.splited['y_test'], preds_new))
         print("\nInitial RMSE: %f" % (self.rmse_org))
         print("\nImproved RMSE: %f" % (self.rmse_imprv))
+        if ((self.rmse_imprv - self.rmse_org) / self.rmse_org) <0:
+          self.rate = round(100*abs((self.rmse_imprv - self.rmse_org) / self.rmse_org),2)
+          print("\nImprovement rate: %f" % (self.rate))
+        print("##########################################################################")
 
 
 
