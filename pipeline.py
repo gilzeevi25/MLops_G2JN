@@ -51,7 +51,7 @@ class G2JN_Pipeline:
     def transform(
         self,
         samples_per_bin=30,
-        max_bins=750,
+        max_bins=1000,
         method="mean",
         threshold=0.3,
         percentile_threshold = 25,
@@ -120,12 +120,12 @@ class G2JN_Pipeline:
         if ((self.rmse_imprv - self.rmse_org) / self.rmse_org) <0:
           self.rate = round(100*abs((self.rmse_imprv - self.rmse_org) / self.rmse_org),2)
           print("\nRMSE improvement rate: %f" % (round(self.rate,2)),"%")
-            
+        print("-------------------------------------------------")    
         print("\nInitial MAE: %f" % (round(self.mae_org,2)))
         print("\nImproved MAE: %f" % (round(self.mae_imprv,2)))
         if ((self.mae_imprv - self.mae_org) / self.mae_org) <0:
           self.mae_rate = round(100*abs((self.mae_imprv - self.mae_org) / self.mae_org),2)
-          print("\nImprovement rate: %f" % (round(self.mae_rate,2)),"%")
+          print("\nMAE Improvement rate: %f" % (round(self.mae_rate,2)),"%")
 
 
 
