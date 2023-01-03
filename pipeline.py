@@ -30,8 +30,8 @@ class G2JN_Pipeline:
         mac_seed = 101,
         samples_per_bin=30,
         max_bins=1000,
-        method="median",
-        threshold=0.7,
+        method="mean",
+        threshold=0.3,
         percentile_threshold = 25,
         min_amount_samples_in_bin = 10,
         gen_seed = 1,
@@ -124,7 +124,7 @@ class G2JN_Pipeline:
         print("\nImproved RMSE: %f" % (self.rmse_imprv))
         if ((self.rmse_imprv - self.rmse_org) / self.rmse_org) <0:
           self.rate = round(100*abs((self.rmse_imprv - self.rmse_org) / self.rmse_org),2)
-          print("\nImprovement rate: %f" % (self.rate))
+          print("\nImprovement rate: %f" % (self.rate),"%")
 
 
 
