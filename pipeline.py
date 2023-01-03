@@ -33,7 +33,7 @@ class G2JN_Pipeline:
         self.xg_reg.fit(self.splited['X_train'],self.splited['y_train'])
         self.preds = self.xg_reg.predict(self.splited['X_test'])
         self.rmse_org = np.sqrt(mean_squared_error(self.splited['y_test'], self.preds))
-        self.mae_org = mean_absolute_error(self.splited['y_test'], self.preds))
+        self.mae_org = mean_absolute_error(self.splited['y_test'], self.preds)
         print("Initial RMSE: %f" % (round(self.rmse_org,2)),"\n")
         print("Initial MAE: %f" % (round(self.mae_org,2)),"\n")
         
