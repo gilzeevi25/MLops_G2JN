@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from utils.help_func import *
 import xgboost as xgb
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error,mean_absolute_error
 
 class G2JN_Pipeline:
     def __init__(
@@ -33,7 +33,10 @@ class G2JN_Pipeline:
         self.xg_reg.fit(self.splited['X_train'],self.splited['y_train'])
         self.preds = self.xg_reg.predict(self.splited['X_test'])
         self.rmse_org = np.sqrt(mean_squared_error(self.splited['y_test'], self.preds))
-        print("Initial RMSE: %f" % (self.rmse_org),"\n")
+        self.mae_org = mean_absolute_error(self.splited['y_test'], self.preds))
+        print("Initial RMSE: %f" % (round(self.rmse_org,2)),"\n")
+        print("Initial MAE: %f" % (round(self.mae_org,2)),"\n")
+        
         # Apply Macest to get prediction interval
         conf_interval = get_conf_interval(conf_int, self.splited,mac_seed)
 
@@ -110,11 +113,20 @@ class G2JN_Pipeline:
         self.xg_reg.fit(self.data_new.drop(labels= [self.y_name,'bins'],axis=1),self.data_new.filter([self.y_name]))
         preds_new = self.xg_reg.predict(self.splited['X_test'])
         self.rmse_imprv = np.sqrt(mean_squared_error(self.splited['y_test'], preds_new))
-        print("\nInitial RMSE: %f" % (self.rmse_org))
-        print("\nImproved RMSE: %f" % (self.rmse_imprv))
+        self.mae_imprv = mean_absolute_error(self.splited['y_test'], preds_new)
+        
+        print("\nInitial RMSE: %f" % (round(self.rmse_org,2)))
+        print("\nImproved RMSE: %f" % (round(self.rmse_imprv,2)))
         if ((self.rmse_imprv - self.rmse_org) / self.rmse_org) <0:
           self.rate = round(100*abs((self.rmse_imprv - self.rmse_org) / self.rmse_org),2)
-          print("\nImprovement rate: %f" % (self.rate),"%")
+          print("\nRMSE improvement rate: %f" % (round(self.rate,2)),"%")
+            
+        print("\nInitial MAE: %f" % (round(self.mae_org,2)))
+        print("\nImproved MAE: %f" % (round(self.mae_imprv,2)))
+        if ((self.mae_imprv - self.mae_org) / self.mae_org) <0:
+          self.mae_rate = round(100*abs((self.mae_imprv - self.mae_org) / self.mae_org),2)
+          print("\nImprovement rate: %f" % (round(self.mae_rate,2)),"%")
+
 
 
 
