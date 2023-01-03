@@ -34,7 +34,6 @@ class G2JN_Pipeline:
         self.preds = self.xg_reg.predict(self.splited['X_test'])
         self.rmse_org = np.sqrt(mean_squared_error(self.splited['y_test'], self.preds))
         print("Initial RMSE: %f" % (self.rmse_org),"\n")
-        self.parameters['org_rmse'] = self.rmse_org
         # Apply Macest to get prediction interval
         conf_interval = get_conf_interval(conf_int, self.splited,mac_seed)
 
