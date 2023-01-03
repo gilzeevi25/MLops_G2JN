@@ -50,7 +50,6 @@ class G2JN_Pipeline:
         self.xg_reg.fit(self.splited['X_train'],self.splited['y_train'])
         self.preds = self.xg_reg.predict(self.splited['X_test'])
         self.rmse_org = np.sqrt(mean_squared_error(self.splited['y_test'], self.preds))
-        print("##########################################################################")
         print("\nInitial RMSE: %f" % (self.rmse_org),"\n")
         ##########################################################################
         #DO WE WANT TO PRINT TRAIN-CONF-CAL-TEST SHAPE?
@@ -128,7 +127,6 @@ class G2JN_Pipeline:
         if ((self.rmse_imprv - self.rmse_org) / self.rmse_org) <0:
           self.rate = round(100*abs((self.rmse_imprv - self.rmse_org) / self.rmse_org),2)
           print("\nImprovement rate: %f" % (self.rate))
-        print("##########################################################################")
 
 
 
