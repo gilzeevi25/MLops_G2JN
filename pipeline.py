@@ -41,8 +41,6 @@ class G2JN_Pipeline:
 
         print(f"Initializing Pipeline on {self.name} dataset...\n")
 
-        if pre_process:
-            self.preprocess(self.X,self.y)
         # Data split
         self.splited = split_bin(self.X,self.y)
 
