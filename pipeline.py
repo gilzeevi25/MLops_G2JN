@@ -34,9 +34,9 @@ class G2JN_Pipeline:
         self.preds = self.xg_reg.predict(self.splited['X_test'])
         self.rmse_org = np.sqrt(mean_squared_error(self.splited['y_test'], self.preds))
         self.mae_org = mean_absolute_error(self.splited['y_test'], self.preds)
-        print("Initial RMSE: %f" % (round(self.rmse_org,2)),"\n")
-        #print(f"Initial RMSE: {round(self.rmse_org,2)}
-        print("Initial MAE: %f" % (round(self.mae_org,2)):.2f,"\n")
+        print(f"Initial RMSE: {round(self.rmse_org,2):.2f}\n")
+        print(f"Initial MAE: {round(self.mae_org,2):.2f}\n")
+
         
         # Apply Macest to get prediction interval
         conf_interval = get_conf_interval(conf_int, self.splited,mac_seed)
@@ -116,17 +116,17 @@ class G2JN_Pipeline:
         self.rmse_imprv = np.sqrt(mean_squared_error(self.splited['y_test'], preds_new))
         self.mae_imprv = mean_absolute_error(self.splited['y_test'], preds_new)
         
-        print("\nInitial RMSE: %f" % (round(self.rmse_org,2)))
-        print("\nImproved RMSE: %f" % (round(self.rmse_imprv,2)))
+        print(f"Initial RMSE: {round(self.rmse_org,2):.2f}")
+        print(f"Improved RMSE: {round(self.rmse_imprv,2):.2f}")
         if ((self.rmse_imprv - self.rmse_org) / self.rmse_org) <0:
           self.rate = round(100*abs((self.rmse_imprv - self.rmse_org) / self.rmse_org),2)
-          print("\nRMSE improvement rate: %f" % (round(self.rate,2)),"%")
+          print(f"\nRMSE improvement rate: {round(self.rate,2):.2f}%")
         print("-------------------------------------------------")    
-        print("\nInitial MAE: %f" % (round(self.mae_org,2)))
-        print("\nImproved MAE: %f" % (round(self.mae_imprv,2)))
+        print(f"Initial MAE: {round(self.mae_org,2):.2f}")
+        print(f"Improved MAE: {round(self.mae_imprv,2):.2f}")   
         if ((self.mae_imprv - self.mae_org) / self.mae_org) <0:
           self.mae_rate = round(100*abs((self.mae_imprv - self.mae_org) / self.mae_org),2)
-          print("\nMAE Improvement rate: %f" % (round(self.mae_rate,2)),"%")
+          print(f"\nMAE Improvement rate: {round(self.mae_rate,2):.2f}%")
 
 
 
