@@ -7,8 +7,8 @@ import pandas as pd
 import torch
 import xgboost as xgb
 from macest.regression import models as reg_mod
-#from sdv.tabular import TVAE,CTGAN #data generation
-from sdv.tabular import CTGAN as Generator
+#from sdv.tabular import TVAE,CTGAN,CopulaGAN #data generation
+from sdv.tabular import CopulaGAN as Generator
 from pyod.models.knn import KNN #outliers removal
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
