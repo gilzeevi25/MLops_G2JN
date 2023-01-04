@@ -7,7 +7,8 @@ import pandas as pd
 import torch
 import xgboost as xgb
 from macest.regression import models as reg_mod
-from sdv.tabular import TVAE #data generation
+#from sdv.tabular import TVAE,CTGAN #data generation
+from sdv.tabular import CTGAN as Generator
 from pyod.models.knn import KNN #outliers removal
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
@@ -147,14 +148,14 @@ def generate_data(data_bin,n_gen=1,seed=1):
   Return:
       generated new data
   """
-  model_tvae = TVAE()
+  model_generator = Generator()
   np.random.seed(seed)
   torch.manual_seed(seed)
-  model_tvae.fit(data_bin)
+  model_generator.fit(data_bin)
 
   np.random.seed(seed)
   torch.manual_seed(seed)
-  new_data = model_tvae.sample(num_rows=len(data_bin)*n_gen)
+  new_data = model_generator.sample(num_rows=len(data_bin)*n_gen)
 
   return new_data
 # Split the data into 4 groups 
