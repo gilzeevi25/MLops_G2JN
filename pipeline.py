@@ -59,6 +59,9 @@ class G2JN_Pipeline:
         min_amount_samples_in_bin = 10,
         gen_seed = 1,
         gen_len = 1,
+        mutate = False,
+        frac = 0.05,
+        min_rep = 5
 
         ):
 
@@ -93,10 +96,20 @@ class G2JN_Pipeline:
         self.bins_df.loc[(self.bins_df.suspected_low_in_data_bins == False) & (self.bins_df.index.isin(uncertainty_bins) ),'uncertainty_type'] = 'Aleatoric'
 
         print((self.bins_df.sort_values(by = "count_samples",ascending=False).head(50)).to_string(),"\n") #beautify pandas df print?
+        
+        data = pd.concat([self.splited['X_train'],self.splited['y_train']], axis=1).reset_index(drop=True)
+        # Apply MEDIAN MUTATION to deal with aleatoric uncertainty - each bin is dealy separately and then re-stack all data together
+
+        if mutate:
+          print("Mutation Occurred!")
+          data_no_alea = data[data['bins'].isin(self.bins_df[self.bins_df['uncertainty_type'] != 'Aleatoric'].index)].reset_index(drop=True)
+          data_no_ol = pd.concat([median_mutation(data[data['bins'] == val],frac,min_rep) for val in self.bins_df[self.bins_df['uncertainty_type'] == 'Aleatoric'].index])
+          #data = pd.concat([data_no_alea,data_no_ol]).reset_index(drop=True)
+          data = pd.concat([data_no_alea,data_no_ol]).reset_index(drop=True)
+        # Remove outliers from each bin separately and then re-stack all data together
 
         # Remove outliers from each bin separately and then re-stack all data together
-        print(f"Total number of samples in bins **before** outliers removal: {self.splited['X_train'].shape[0]}")
-        data = pd.concat([self.splited['X_train'],self.splited['y_train']], axis=1).reset_index(drop=True)
+        print(f"Total number of samples in bins **before** outliers removal: {data.shape[0]}")
         data_no_alea = data[data['bins'].isin(self.bins_df[self.bins_df['uncertainty_type'] != 'Aleatoric'].index)].reset_index(drop=True)
         data_no_ol = pd.concat([remove_outliers(data[data['bins'] == val]) for val in self.bins_df[self.bins_df['uncertainty_type'] == 'Aleatoric'].index])
         data_no_ol = pd.concat([data_no_alea,data_no_ol]).reset_index(drop=True)
