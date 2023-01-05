@@ -188,21 +188,27 @@ def split_bin(X, y):
 
   return splited_data
 
-def mutation_imptutation(data_bin,imputers,mut_frac = 0.05,seed=1,min_mut_len = 5): 
+
+def median_mutation(data_bin,frac = 0.05,min_rep = 5,seed=1): 
   """
-  Creates a mutation for a fraction of the data. assigns imputers as new values
+  Creates a mutation for a fraction of the data. assigns replace values for bin's median
   Args:
-      X, y: Pandas.DataFrame
+      data_bin: a bin with aleatoric uncertainty - Pandas.DataFrame
+      frac: percentage of mutation - float
+      min_rep: minimum replacements for median mutation if frac of data < 1 - int
 
   Return:
-      splited_data: Dictionary
+      New mutated data bin - Pandas.DataFrame
   """
   data_mut= data_bin.copy()
-  np.random.seed(seed)
-  idx = data_mut.sample(frac=mut_frac).index
-  if len(idx)<1:
-    np.random.seed(seed)
-    idx = data_mut.sample(min_mut_len).index
+  # If less than 20 samples and more than 5, insert 5 median samples. if less than 5-> double the size with median samples
+  if len(data_mut)<20:
+    x = data_mut.iloc[0:min_rep,:] if len(data_mut) > min_rep else data_mut.iloc[0:len(data_mut),:]
+    x.iloc[:,:] = data_bin.median()
+    data_mut = pd.concat([data_bin,x])
+    return data_mut.sample(frac = 1,random_state=seed)#.reset_index(drop=True)
 
-  data_mut.loc[idx] = imputers +[data_mut['bins'].iloc[0]]
-  return data_mut
+  # Mutate 5% or minimum 5 samples(default values) of the data with median replacement if there ar
+  idx = data_mut.sample(frac=frac,random_state=seed).index if len(data_mut) > 100 else data_mut.sample(min_rep,random_state=42).index # get random samples to replace with median values
+  data_mut.loc[idx] =data_bin.median().values
+  return data_mut.sample(frac = 1,random_state=seed).reset_index(drop=True)
