@@ -80,9 +80,9 @@ if __name__ == "__main__":
     pipline_mot = G2JN_Pipeline(X_mot, y_mot, name )
     pipline_mot.fit()
     pipline_mot.transform(  max_bins = 750,
-                            threshold=0.7,
-                            min_amount_samples_in_bin = 15,
-                            mutate =True,
-                            frac = 0.2,
-                            f_thr = 95)
+                            threshold=0.3,
+                            min_amount_samples_in_bin = 10,
+                            percentile_threshold = 50,
+                            mutate =False,
+                            f_thr = False)
 
