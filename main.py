@@ -83,6 +83,6 @@ if __name__ == "__main__":
                             threshold=0.7,
                             min_amount_samples_in_bin = 15,
                             mutate =True,
-                            frac = 0.2
+                            frac = 0.2,
                             f_thr = 95)
 
