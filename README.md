@@ -18,7 +18,7 @@ In order to activate our pipeline you can do the follwoing steps:<br>
 import os
 os.kill(os.getpid(), 9)
 ```
-It will crash after finishing the installments - thats ok!<br>
+The kernel will crash and restarts after finishing the installments - thats ok!<br>
 3. Run the following cell and watch output:
 ```
 !git clone https://github.com/gilzeevi25/MLops_G2JN 
