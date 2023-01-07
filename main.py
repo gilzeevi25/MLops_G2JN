@@ -37,18 +37,6 @@ def load_motors(one_hot=False):
   name = "French-Motor-claims"
   return X_mot, y_mot,name
   
-    motors_dataset = pd.read_csv('data/freMTPL2freq.csv')
-    # Convert Categorical features to Numerical Features
-    for col in ['Area','VehBrand','VehGas','Region']:
-        d = {}
-        for i, val in enumerate(motors_dataset[col].unique()):
-            d[val] = i + 1
-        motors_dataset[col] = motors_dataset[col].apply(lambda x: d[x])
-    # Calculate Frequency
-    motors_dataset['Frequency'] = motors_dataset['ClaimNb'] / motors_dataset['Exposure']
-    X_mot, y_mot = motors_dataset.drop(['IDpol', 'ClaimNb', 'Exposure', 'Frequency'],axis=1), motors_dataset['Frequency']
-    name = "French-Motor-claims"
-    return X_mot, y_mot,name
 
 def parameters_tuning(X,y,name):
   params_df = pd.DataFrame()
