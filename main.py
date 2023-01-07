@@ -11,16 +11,44 @@ def load_boston():
     name = "Boston-Housing"
     return  X_bos, y_bos, name
 
-def load_motors():
-  motors_dataset = pd.read_csv('data/freMTPL2freq.csv')#.sample(frac=0.1,random_state=1).reset_index(drop=True)
+def load_motors(one_hot=False):
+  # ONE HOT VERSION
+  if one_hot:
+      motors_dataset = pd.read_csv('data/freMTPL2freq.csv')#.sample(frac=0.1,random_state=1).reset_index(drop=True)
+      motors_dataset['Frequency'] = motors_dataset['ClaimNb'] / motors_dataset['Exposure']
+      X_mot, y_mot = motors_dataset.drop(['IDpol', 'ClaimNb', 'Exposure', 'Frequency'],axis=1), motors_dataset['Frequency']
+      categorical_columns = X_mot.dtypes[X_mot.dtypes == 'object'].index
+      # Perform one-hot encoding on the categorical columns
+      one_hot_df = pd.get_dummies(X_mot[categorical_columns], dtype=float)
+      X_mot =  (X_mot.drop(categorical_columns,axis=1)).join(one_hot_df).reset_index(drop=True)
+      name = "French-Motor-claims"
+      return X_mot, y_mot,name
+
+  motors_dataset = pd.read_csv('data/freMTPL2freq.csv')
+  # Convert Categorical features to Numerical Features
+  for col in ['Area','VehBrand','VehGas','Region']:
+      d = {}
+      for i, val in enumerate(motors_dataset[col].unique()):
+          d[val] = i + 1
+      motors_dataset[col] = motors_dataset[col].apply(lambda x: d[x])
+  # Calculate Frequency
   motors_dataset['Frequency'] = motors_dataset['ClaimNb'] / motors_dataset['Exposure']
   X_mot, y_mot = motors_dataset.drop(['IDpol', 'ClaimNb', 'Exposure', 'Frequency'],axis=1), motors_dataset['Frequency']
-  categorical_columns = X_mot.dtypes[X_mot.dtypes == 'object'].index
-  # Perform one-hot encoding on the categorical columns
-  one_hot_df = pd.get_dummies(X_mot[categorical_columns], dtype=float)
-  X_mot =  (X_mot.drop(categorical_columns,axis=1)).join(one_hot_df).reset_index(drop=True)
   name = "French-Motor-claims"
   return X_mot, y_mot,name
+  
+    motors_dataset = pd.read_csv('data/freMTPL2freq.csv')
+    # Convert Categorical features to Numerical Features
+    for col in ['Area','VehBrand','VehGas','Region']:
+        d = {}
+        for i, val in enumerate(motors_dataset[col].unique()):
+            d[val] = i + 1
+        motors_dataset[col] = motors_dataset[col].apply(lambda x: d[x])
+    # Calculate Frequency
+    motors_dataset['Frequency'] = motors_dataset['ClaimNb'] / motors_dataset['Exposure']
+    X_mot, y_mot = motors_dataset.drop(['IDpol', 'ClaimNb', 'Exposure', 'Frequency'],axis=1), motors_dataset['Frequency']
+    name = "French-Motor-claims"
+    return X_mot, y_mot,name
 
 def parameters_tuning(X,y,name):
   params_df = pd.DataFrame()
