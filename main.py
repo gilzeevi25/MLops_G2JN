@@ -79,7 +79,7 @@ if __name__ == "__main__":
     X_mot, y_mot, name = load_motors()
     pipline_mot = G2JN_Pipeline(X_mot, y_mot, name )
     pipline_mot.fit()
-    pipline_mot.transform(  max_bins = 750,
+    pipline_mot.transform(  max_bins = 1000, # 750 or 1000
                             threshold=0.3,
                             min_amount_samples_in_bin = 10,
                             percentile_threshold = 50,
