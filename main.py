@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 from pipeline import G2JN_Pipeline
+import time
+
 
 
 
@@ -82,6 +84,7 @@ def parameters_tuning(X,y,name):
 
 if __name__ == "__main__":
     #parameters_tuning(load_motors())
+    start = time.time()
     X_bos, y_bos, name = load_boston()
     print("--------------------------------"*3)
     print("--------------------------------"*3)
@@ -101,4 +104,10 @@ if __name__ == "__main__":
                             percentile_threshold = 50,
                             mutate =False,
                             f_thr = False)
+    end = time.time()
+    elapsed_time = end - start
+    minutes = int(elapsed_time / 60)
+    seconds = int(elapsed_time % 60)
+    print()
+    print("Elapsed time:", minutes, "minutes", seconds, "seconds")
 
