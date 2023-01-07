@@ -132,7 +132,7 @@ class G2JN_Pipeline:
             # Aleatoric uncertainty
         self.bins_df.loc[(self.bins_df.suspected_low_in_data_bins == False) & (self.bins_df.index.isin(uncertainty_bins) ),'uncertainty_type'] = 'Aleatoric'
 
-        #print((self.bins_df.sort_values(by = "count_samples",ascending=False).head(50)).to_string(),"\n") #beautify pandas df print?
+        print((self.bins_df.sort_values(by = "count_samples",ascending=False).head(50)).to_string(),"\n") #beautify pandas df print
         
         data = pd.concat([self.splited['X_train'],self.splited['y_train']], axis=1).reset_index(drop=True)
         # Apply MEDIAN MUTATION to deal with aleatoric uncertainty - each bin is dealy separately and then re-stack all data together
