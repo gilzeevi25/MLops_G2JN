@@ -57,7 +57,6 @@ class G2JN_Pipeline:
         self.mae_org = mean_absolute_error(self.splited['y_test'], self.preds)
         self.parameters['org_mae'] = self.mae_org
         print(f"Initial RMSE: {round(self.rmse_org,2):.2f}\n")
-        print(f"Initial MAE: {round(self.mae_org,2):.2f}\n")
 
         
         # Apply Macest to get prediction interval
@@ -110,6 +109,8 @@ class G2JN_Pipeline:
             max_bins,
             method,
             threshold) 
+        print(f"Number of bins in the data: {len(self.bins_df)}\n")
+        print(f"Number of bins suspected Low In Data: {self.bins_df.suspected_low_in_data_bins.sum()}")
         
         # Analyze bin uncertainty
         binslist = np.append(self.bins_df['start_bin_value'].values, self.bins_df['end_bin_value'].iloc[-1])
@@ -117,7 +118,7 @@ class G2JN_Pipeline:
         diff_per_bin = pd.DataFrame(self.conf_df.groupby('bins')['diff_prop'].mean()).reset_index()
         top_percentile = np.percentile(self.conf_df.groupby('bins')['diff_prop'].mean().dropna(), percentile_threshold)
         uncertainty_bins = diff_per_bin[diff_per_bin.diff_prop > top_percentile]['bins']
-
+        print(f"Amount of uncertain bins from MACEst: {len(uncertainty_bins)}")
         # Assign Epistemic and Aleatoric uncertainties
             # Epistemic uncertainty
         self.bins_df.loc[(self.bins_df.suspected_low_in_data_bins == True) &
@@ -131,7 +132,7 @@ class G2JN_Pipeline:
 
             # Aleatoric uncertainty
         self.bins_df.loc[(self.bins_df.suspected_low_in_data_bins == False) & (self.bins_df.index.isin(uncertainty_bins) ),'uncertainty_type'] = 'Aleatoric'
-
+        print((self.bins_df['uncertainty_type'].value_counts()).to_string())
         print((self.bins_df.sort_values(by = "count_samples",ascending=False).head(50)).to_string(),"\n") #beautify pandas df print
         
         data = pd.concat([self.splited['X_train'],self.splited['y_train']], axis=1).reset_index(drop=True)
@@ -174,8 +175,6 @@ class G2JN_Pipeline:
         preds_new = last_pipeline.predict(self.splited['X_test'])
         self.rmse_imprv = np.sqrt(mean_squared_error(self.splited['y_test'], preds_new))
         self.parameters['imprv_rmse'] = self.rmse_imprv
-        self.mae_imprv = mean_absolute_error(self.splited['y_test'], preds_new)
-        self.parameters['imprv_mae'] =  self.mae_imprv
         print("-------------------------------------------------")   
         print(f"Initial RMSE: {round(self.rmse_org,2):.2f}")
         print(f"Improved RMSE: {round(self.rmse_imprv,2):.2f}")
@@ -183,11 +182,6 @@ class G2JN_Pipeline:
           self.rate = round(100*abs((self.rmse_imprv - self.rmse_org) / self.rmse_org),2)
           print(f"\nRMSE improvement rate: {round(self.rate,2):.2f}%")
         print("-------------------------------------------------")    
-        print(f"Initial MAE: {round(self.mae_org,2):.2f}")
-        print(f"Improved MAE: {round(self.mae_imprv,2):.2f}")   
-        if ((self.mae_imprv - self.mae_org) / self.mae_org) <0:
-          self.mae_rate = round(100*abs((self.mae_imprv - self.mae_org) / self.mae_org),2)
-          print(f"\nMAE Improvement rate: {round(self.mae_rate,2):.2f}%")
 
 
 
