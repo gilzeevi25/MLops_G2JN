@@ -8,7 +8,7 @@ We present in this repo our pipeline spotting uncertaincies in a given dataset, 
 ![Our proposed pipeline](https://github.com/gilzeevi25/MLops_G2JN/blob/master/utils/pipeline.PNG)
 ## Running the pipeline
 In order to activate our pipeline you can do the follwoing steps:<br>
-1. Press [Start_G2JN.ipynb](https://github.com/gilzeevi25/MLops_G2JN/blob/master/Start_G2JN.ipynb)
+1. Press [Start_G2JN.ipynb](https://colab.research.google.com/github/gilzeevi25/MLops_G2JN/blob/master/Start_G2JN.ipynb)
 2. Run the first cell:
 ```
 %%capture
