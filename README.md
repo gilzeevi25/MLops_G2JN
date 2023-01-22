@@ -26,9 +26,9 @@ The kernel will crash and restarts after finishing the installments - thats ok!<
 !python main.py 
 ```
 ## Client's reports
-Please click here to inspect:
- -[Midterm report](https://github.com/gilzeevi25/MLops_G2JN/blob/master/report/G2JN_Final_Report.pdf)
- -[Final report](https://github.com/gilzeevi25/MLops_G2JN/blob/master/report/G2JN_Midterm_Report.pdf)
+Please click here to inspect:<br>
+- [Midterm report](https://github.com/gilzeevi25/MLops_G2JN/blob/master/report/G2JN_Final_Report.pdf)
+- [Final report](https://github.com/gilzeevi25/MLops_G2JN/blob/master/report/G2JN_Midterm_Report.pdf)
 
 ## Thanks for visiting
  ![visitors](https://visitor-badge.glitch.me/badge?page_id=gilzeevi25.MLops_G2JN.issue.1) <br/>
